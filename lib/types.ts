@@ -1,4 +1,6 @@
 export type ReviewSource = "Amazon" | "Sephora";
+export type EvidenceKind = "review_quote" | "review_signal";
+
 export type ThemeTag =
   | "보습"
   | "저자극"
@@ -8,37 +10,54 @@ export type ThemeTag =
   | "패키지"
   | "가성비"
   | "프리미엄감";
-export type PainPointTag =
-  | "흡수감 불만"
-  | "자극 우려"
-  | "패키지 불편"
-  | "가성비 부담"
-  | "향 호불호";
-export type PremiumSignalTag =
-  | "스파 같은 경험"
-  | "정제된 텍스처"
-  | "선물하기 좋은 패키지";
-export type SentimentLabel = "긍정" | "혼합" | "부정";
 
-export interface ReviewRecord {
+export type PainPointTag =
+  | "건조함 우려"
+  | "향 민감도"
+  | "효과 체감 약함"
+  | "사용감 불만"
+  | "패키지/리필 니즈";
+
+export type MarketSignalTag =
+  | "겨울철 보습"
+  | "민감 피부 적합"
+  | "프리미엄 텍스처"
+  | "레이어링 친화"
+  | "만족도 우세";
+
+export type SentimentLabel = "긍정" | "혼합" | "부정" | "신호";
+
+export interface ConsumerEvidence {
+  id: string;
   source: ReviewSource;
+  evidence_kind: EvidenceKind;
   brand: string;
   product_name: string;
   category: string;
-  rating: number;
+  rating: number | null;
   review_title: string;
   review_text: string;
-  review_date: string;
+  review_summary: string;
+  review_date: string | null;
+  captured_at: string;
   country: string;
   price_band: string;
   skin_concern: string;
+  source_url: string;
+  source_domain: string;
+  review_count: number | null;
+  source_signal_tags: string[];
+  signal_label: string | null;
+  reviewer_alias: string | null;
+  verified_purchase: boolean | null;
+  quote_excerpt: string | null;
 }
 
-export interface EnrichedReview extends ReviewRecord {
+export interface EnrichedEvidence extends ConsumerEvidence {
   sentiment_label: SentimentLabel;
   theme_tags: ThemeTag[];
   pain_point_tags: PainPointTag[];
-  premium_signal_tags: PremiumSignalTag[];
+  market_signal_tags: MarketSignalTag[];
   opportunity_score: number;
   matched_keywords: string[];
 }
@@ -56,11 +75,13 @@ export interface RatingBucket {
 
 export interface ChannelComparison {
   source: ReviewSource;
-  reviewCount: number;
-  averageRating: number;
+  evidenceCount: number;
+  directReviewCount: number;
+  signalCount: number;
+  averageRating: number | null;
   topTheme: string;
   topPainPoint: string;
-  premiumShare: number;
+  topMarketSignal: string;
   insight: string;
 }
 
@@ -75,22 +96,22 @@ export interface OpportunityCard {
   opportunityScore: number;
   representativeQuote: string;
   dominantTags: string[];
-  evidenceReviews: EnrichedReview[];
+  evidenceItems: EnrichedEvidence[];
   sourceMix: ReviewSource[];
 }
 
 export interface PortfolioAnalysis {
-  enrichedReviews: EnrichedReview[];
+  enrichedEvidence: EnrichedEvidence[];
   metrics: {
-    totalReviews: number;
+    totalEvidence: number;
+    directReviewCount: number;
+    signalCount: number;
     averageRating: number;
-    premiumShare: number;
-    repeatedIssueShare: number;
     opportunityCount: number;
   };
   themeSignals: TagCount[];
   painSignals: TagCount[];
-  premiumSignals: TagCount[];
+  marketSignals: TagCount[];
   ratingDistribution: RatingBucket[];
   channelComparisons: ChannelComparison[];
   opportunityCards: OpportunityCard[];
@@ -99,6 +120,7 @@ export interface PortfolioAnalysis {
 
 export interface FilterState {
   source: string;
+  evidenceKind: string;
   brand: string;
   category: string;
   ratingBand: string;

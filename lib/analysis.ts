@@ -1,183 +1,104 @@
 import {
   ChannelComparison,
-  EnrichedReview,
+  ConsumerEvidence,
+  EnrichedEvidence,
   FilterState,
+  MarketSignalTag,
   OpportunityCard,
   PainPointTag,
   PortfolioAnalysis,
-  PremiumSignalTag,
   RatingBucket,
-  ReviewRecord,
   SentimentLabel,
   ThemeTag,
 } from "@/lib/types";
 
 const themeDictionary: Record<ThemeTag, string[]> = {
-  보습: [
-    "hydrating",
-    "hydration",
-    "moisture",
-    "moisturizing",
-    "plump",
-    "dewy",
-    "dry patches",
-    "barrier",
-    "comforts dry",
-    "nourishing",
-  ],
-  저자극: [
-    "gentle",
-    "soothing",
-    "calm",
-    "sensitive",
-    "redness",
-    "fragrance-free",
-    "irritation",
-    "stinging",
-    "eczema",
-    "reactive skin",
-  ],
-  흡수력: [
-    "absorbs",
-    "absorb",
-    "absorbed",
-    "sinks in",
-    "quick",
-    "fast",
-    "greasy",
-    "sticky",
-    "tacky",
-    "pilling",
-  ],
-  향: ["scent", "fragrance", "smell", "odor", "perfume"],
-  사용감: [
-    "texture",
-    "finish",
-    "layer",
-    "layering",
-    "lightweight",
-    "rich",
-    "silky",
-    "watery",
-    "creamy",
-    "bouncy",
-  ],
-  패키지: ["pump", "jar", "packaging", "bottle", "cap", "tube", "refill", "travel", "spatula"],
-  가성비: ["worth", "price", "expensive", "value", "lasts long", "tiny", "cost", "overpriced"],
-  프리미엄감: [
-    "luxurious",
-    "luxury",
-    "premium",
-    "spa-like",
-    "elegant",
-    "refined",
-    "beautiful bottle",
-    "high-end",
-    "display-worthy",
-  ],
+  보습: ["hydrating", "hydration", "moisture", "moisturizer", "dry skin", "barrier", "ceramide", "dewy"],
+  저자극: ["gentle", "sensitive", "soothing", "barrier", "stinging", "irritation"],
+  흡수력: ["absorb", "absorbing", "fast", "quick", "layering", "light", "watery"],
+  향: ["smell", "scent", "fragrance", "honey"],
+  사용감: ["texture", "finish", "rich", "lightweight", "comfortable", "polished", "heavy"],
+  패키지: ["pump", "packaging", "bottle", "jar", "refill"],
+  가성비: ["value", "price", "overpriced", "worth"],
+  프리미엄감: ["premium", "luxury", "sensorial", "prestige", "elegant"],
 };
 
 const painPointDictionary: Record<PainPointTag, string[]> = {
-  "흡수감 불만": ["sticky", "greasy", "tacky", "pilling", "sits on top", "won't absorb", "too heavy"],
-  "자극 우려": ["irritation", "stinging", "burning", "breakout", "redness", "rash", "fragrance was too much"],
-  "패키지 불편": ["pump stopped", "jar", "messy", "leaks", "no refill", "spatula", "travel cap", "bottle cracked"],
-  "가성비 부담": ["overpriced", "pricey", "too expensive", "small for the price", "tiny jar", "costly"],
-  "향 호불호": ["strong scent", "fragrance", "perfume", "smell"],
+  "건조함 우려": ["dryness", "dry", "richer follow-up", "stripped", "cold weather"],
+  "향 민감도": ["smell", "scent", "fragrance", "sensory"],
+  "효과 체감 약함": ["not every day", "too active", "mixed", "caution"],
+  "사용감 불만": ["heavy", "sting", "stinging", "awkward", "inconvenience"],
+  "패키지/리필 니즈": ["pump", "packaging", "jar", "refill"],
 };
 
-const premiumDictionary: Record<PremiumSignalTag, string[]> = {
-  "스파 같은 경험": ["spa-like", "luxurious", "luxury", "high-end"],
-  "정제된 텍스처": ["silky", "velvety", "elegant", "refined", "plush"],
-  "선물하기 좋은 패키지": ["beautiful bottle", "glass bottle", "premium packaging", "display-worthy", "looks expensive"],
+const marketSignalDictionary: Record<MarketSignalTag, string[]> = {
+  "겨울철 보습": ["cold weather", "dry skin", "intense hydration", "barrier"],
+  "민감 피부 적합": ["sensitive skin", "gentle", "soothing", "barrier"],
+  "프리미엄 텍스처": ["smell", "sensorial", "premium", "luxury", "dewy"],
+  "레이어링 친화": ["layering", "watery", "fast", "toner", "light"],
+  "만족도 우세": ["satisfaction", "top review", "positive review", "customer-review signal"],
 };
 
-const positiveKeywords = [
-  "love",
-  "glowy",
-  "soft",
-  "calming",
-  "effective",
-  "beautiful",
-  "worth it",
-  "repurchase",
-  "favorite",
-  "comfortable",
-];
-
-const negativeKeywords = [
-  "sticky",
-  "greasy",
-  "overpriced",
-  "messy",
-  "broke me out",
-  "pilling",
-  "irritation",
-  "stinging",
-  "strong scent",
-];
+const positiveKeywords = ["smoother", "comfortable", "works well", "clean", "polished", "satisfaction", "approval"];
+const negativeKeywords = ["sting", "stinging", "awkward", "dryness", "too active", "not every day"];
 
 const opportunityTemplates = [
   {
-    id: "sensitive-aging",
-    title: "저자극 안티에이징 수요 확대",
+    id: "barrier-sensitive",
+    title: "민감 피부 장벽 보습 수요",
     summary:
-      "민감성 피부도 부담 없이 사용할 수 있으면서, 보습과 탄력감을 동시에 주는 프리미엄 케어 수요가 반복적으로 보입니다.",
-    proposalConcept: "세라마이드·펩타이드 기반 저자극 퍼밍 크림",
+      "민감 피부 적합성과 장벽 보습 신호가 동시에 반복돼, 저자극 고보습 제안이 고객사 미팅에서 설득력을 갖기 좋은 구간입니다.",
+    proposalConcept: "세라마이드 기반 저자극 장벽 보습 라인",
     salesTalkingPoint:
-      "기존 고객사에는 민감성 안티에이징 라인 확장 제안, 신규 고객사에는 프리미엄 스킨케어 진입형 콘셉트로 연결할 수 있습니다.",
+      "민감 피부와 건성 니즈가 겹치는 구간을 겨냥해, 저자극 신뢰성과 집중 보습감을 동시에 강조하는 신제품 제안 포인트로 연결할 수 있습니다.",
     roleTie:
-      "소비자 불안을 줄이는 효능 포인트를 계약 제안 언어로 번역해, 고객사 니즈 대응과 제품 개발 커뮤니케이션에 활용할 수 있습니다.",
-    match: (review: EnrichedReview) =>
-      (review.theme_tags.includes("저자극") || review.skin_concern.toLowerCase().includes("sensitivity")) &&
-      (review.skin_concern.toLowerCase().includes("anti-aging") ||
-        review.theme_tags.includes("보습") ||
-        review.premium_signal_tags.length > 0),
+      "고객사 신제품 제안 단계에서 소비자 불안 요인과 선호 요인을 함께 번역해 포지셔닝 메시지를 만드는 역량을 보여줍니다.",
+    match: (evidence: EnrichedEvidence) =>
+      evidence.theme_tags.includes("보습") &&
+      (evidence.theme_tags.includes("저자극") || evidence.market_signal_tags.includes("민감 피부 적합")),
   },
   {
-    id: "absorption-fix",
-    title: "흡수감 개선 니즈",
+    id: "premium-sensorial",
+    title: "프리미엄 텍스처와 향 경험 강화",
     summary:
-      "효능은 만족하지만 끈적임, 밀림, 무거운 잔여감 때문에 재구매를 망설이는 패턴이 확인됩니다.",
-    proposalConcept: "퀵-흡수 세럼·크림 제형 리뉴얼",
+      "Sephora 시그널에서 향과 만족도가 반복되고 있어, 효능 설명만이 아니라 감각적 사용 경험까지 설계하는 제안이 유효합니다.",
+    proposalConcept: "향 경험을 살린 프리미엄 보습 크림 또는 슬리핑 포맷",
     salesTalkingPoint:
-      "기존 제품의 효능은 유지하면서 사용감 이슈를 보완한 리뉴얼 제안으로 고객사 재발주와 리뉴얼 논의를 유도할 수 있습니다.",
+      "프리미엄감은 성분만으로 형성되지 않기 때문에, 향과 발림성까지 포함한 감각 설계형 제안을 고객사별 차별 포인트로 활용할 수 있습니다.",
     roleTie:
-      "반복 불만을 명확한 개선 포인트로 정리하면, 고객 대응과 납기 전 샘플 피드백 정리에 바로 활용할 수 있습니다.",
-    match: (review: EnrichedReview) =>
-      review.pain_point_tags.includes("흡수감 불만") ||
-      review.review_text.toLowerCase().includes("sticky") ||
-      review.review_text.toLowerCase().includes("pilling"),
+      "기존 고객사 육성 과정에서 단가 경쟁이 아니라 감각 경험과 카테고리 업그레이드로 제안 범위를 넓히는 관점을 보여줍니다.",
+    match: (evidence: EnrichedEvidence) =>
+      evidence.theme_tags.includes("향") ||
+      evidence.theme_tags.includes("프리미엄감") ||
+      evidence.market_signal_tags.includes("프리미엄 텍스처"),
   },
   {
-    id: "premium-texture",
-    title: "프리미엄 텍스처 선호",
+    id: "layering-absorption",
+    title: "레이어링 친화 제형 기회",
     summary:
-      "단순 기능보다 실키함, 우아한 마무리감, 스파 같은 경험을 중시하는 프리미엄 감성 키워드가 강하게 나타납니다.",
-    proposalConcept: "감각형 하이엔드 텍스처 세럼·크림",
+      "무겁지 않게 레이어링되는 보습 포맷과 빠른 흡수감에 대한 선호가 보이므로, 토너-에센스-크림 중간 제형 제안 여지가 있습니다.",
+    proposalConcept: "빠른 흡수의 밀키 토너 또는 젤-크림 하이브리드",
     salesTalkingPoint:
-      "고급화 전략을 원하는 고객사에는 사용감 차별화와 패키지 감성까지 묶은 프리미엄 포맷 제안을 할 수 있습니다.",
+      "건성 대응을 유지하면서도 답답함을 줄인 제형은 미국 이커머스와 세포라형 채널 모두에서 설득 포인트가 될 수 있습니다.",
     roleTie:
-      "가격이 아니라 감각 경험으로 제품을 설명하는 언어를 확보해, 고객사 육성용 제안서의 설득력을 높일 수 있습니다.",
-    match: (review: EnrichedReview) =>
-      review.theme_tags.includes("프리미엄감") ||
-      review.premium_signal_tags.length > 0 ||
-      review.review_text.toLowerCase().includes("silky"),
+      "제품 제안 이후 발주와 납기 협의 단계에서도 SKU 확장 논리를 만들기 쉬운 실무형 기회 영역입니다.",
+    match: (evidence: EnrichedEvidence) =>
+      evidence.theme_tags.includes("흡수력") ||
+      evidence.market_signal_tags.includes("레이어링 친화") ||
+      evidence.pain_point_tags.includes("사용감 불만"),
   },
   {
-    id: "refill-packaging",
-    title: "리필·대용량 패키지 기회",
+    id: "winter-moisture",
+    title: "겨울철 집중 보습 SKU 확장",
     summary:
-      "패키지 편의성과 용량 만족도에 대한 언급이 반복되며, 사용 경험 유지와 실용성 개선을 동시에 원하는 수요가 보입니다.",
-    proposalConcept: "리필형 또는 대용량 보습 라인",
+      "Cold weather와 dry skin 시그널이 반복되어, 계절성 집중 보습 SKU를 별도로 제안할 근거가 충분합니다.",
+    proposalConcept: "윈터 배리어 크림 또는 집중 보습 밤",
     salesTalkingPoint:
-      "재구매가 많은 보습 카테고리 고객사에는 리필 구조나 대용량 SKU 확장으로 객단가와 충성도를 동시에 높이는 제안을 할 수 있습니다.",
+      "계절성 SKU는 기존 고객사와의 매출 확장, 재발주 포인트, 프로모션 메시지 설계까지 함께 이야기할 수 있는 기회입니다.",
     roleTie:
-      "패키지·발주 단위·라인 확장 가능성을 함께 해석하면, 영업과 납기관리 관점 모두에서 실무적인 제안 포인트가 됩니다.",
-    match: (review: EnrichedReview) =>
-      review.theme_tags.includes("패키지") ||
-      review.pain_point_tags.includes("패키지 불편") ||
-      review.review_text.toLowerCase().includes("refill") ||
-      review.review_text.toLowerCase().includes("small for the price"),
+      "영업과 납기관리 관점에서 시즌성 수요를 근거 있게 설명하면 발주 타이밍과 제안 우선순위 조율에 강점이 생깁니다.",
+    match: (evidence: EnrichedEvidence) =>
+      evidence.market_signal_tags.includes("겨울철 보습") || evidence.pain_point_tags.includes("건조함 우려"),
   },
 ];
 
@@ -189,13 +110,44 @@ function includesKeyword(text: string, keyword: string) {
   return text.includes(normalizeText(keyword).trim());
 }
 
+function average(values: number[]) {
+  if (values.length === 0) {
+    return 0;
+  }
+
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function countMap(items: string[]) {
+  const counts = new Map<string, number>();
+
+  items.forEach((item) => {
+    counts.set(item, (counts.get(item) ?? 0) + 1);
+  });
+
+  return counts;
+}
+
+function rankLabels(items: string[], recentItems: string[]) {
+  const counts = countMap(items);
+  const recentCounts = countMap(recentItems);
+
+  return [...counts.entries()]
+    .map(([label, count]) => ({
+      label,
+      count,
+      weight: count * 10 + (recentCounts.get(label) ?? 0) * 4,
+    }))
+    .sort((left, right) => right.weight - left.weight);
+}
+
 function extractLabels<T extends string>(text: string, dictionary: Record<T, string[]>) {
   return (Object.entries(dictionary) as Array<[T, string[]]>).reduce<{ labels: T[]; matchedKeywords: string[] }>(
     (accumulator, [label, keywords]) => {
       const matched = keywords.filter((keyword) => includesKeyword(text, keyword));
 
       if (matched.length > 0) {
-        accumulator.labels.push(label as T);
+        accumulator.labels.push(label);
         accumulator.matchedKeywords.push(...matched);
       }
 
@@ -205,164 +157,152 @@ function extractLabels<T extends string>(text: string, dictionary: Record<T, str
   );
 }
 
-function determineSentiment(rating: number, text: string): SentimentLabel {
+function determineSentiment(evidence: ConsumerEvidence, text: string): SentimentLabel {
+  if (evidence.evidence_kind === "review_signal") {
+    return "신호";
+  }
+
   const positiveHits = positiveKeywords.filter((keyword) => includesKeyword(text, keyword)).length;
   const negativeHits = negativeKeywords.filter((keyword) => includesKeyword(text, keyword)).length;
-  const score = rating - 3 + positiveHits * 0.5 - negativeHits * 0.8;
+  const ratingScore = (evidence.rating ?? 3) - 3;
+  const score = ratingScore + positiveHits * 0.6 - negativeHits * 0.8;
 
   if (score >= 1.25) {
     return "긍정";
   }
 
-  if (score <= -0.75) {
+  if (score <= -0.6) {
     return "부정";
   }
 
   return "혼합";
 }
 
-function average(values: number[]) {
-  if (values.length === 0) {
-    return 0;
-  }
-
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+function buildCorpus(evidence: ConsumerEvidence) {
+  return normalizeText(
+    [
+      evidence.brand,
+      evidence.product_name,
+      evidence.category,
+      evidence.review_title,
+      evidence.review_text,
+      evidence.review_summary,
+      evidence.skin_concern,
+      evidence.price_band,
+      evidence.signal_label ?? "",
+      evidence.source_signal_tags.join(" "),
+    ].join(" "),
+  );
 }
 
-function formatCountMap(items: string[]) {
-  const map = new Map<string, number>();
-
-  items.forEach((item) => {
-    map.set(item, (map.get(item) ?? 0) + 1);
-  });
-
-  return [...map.entries()];
-}
-
-function rankLabels(items: string[], recentItems: string[]) {
-  const counts = formatCountMap(items);
-  const recentCounts = new Map<string, number>(formatCountMap(recentItems));
-
-  return counts
-    .map(([label, count]) => ({
-      label,
-      count,
-      weight: count * 10 + (recentCounts.get(label) ?? 0) * 4,
-    }))
-    .sort((left, right) => right.weight - left.weight);
-}
-
-function quoteExcerpt(text: string) {
-  return text.length > 150 ? `${text.slice(0, 147)}...` : text;
-}
-
-function enrichReview(review: ReviewRecord): EnrichedReview {
-  const combinedText = normalizeText(`${review.review_title} ${review.review_text}`);
-  const themeExtraction = extractLabels(combinedText, themeDictionary);
-  const painExtraction = extractLabels(combinedText, painPointDictionary);
-  const premiumExtraction = extractLabels(combinedText, premiumDictionary);
-  const sentiment = determineSentiment(review.rating, combinedText);
+function enrichEvidence(evidence: ConsumerEvidence): EnrichedEvidence {
+  const corpus = buildCorpus(evidence);
+  const themeExtraction = extractLabels(corpus, themeDictionary);
+  const painExtraction = extractLabels(corpus, painPointDictionary);
+  const marketExtraction = extractLabels(corpus, marketSignalDictionary);
   const opportunityScore = Math.min(
-    98,
+    99,
     Math.round(
-      24 +
+      36 +
         themeExtraction.labels.length * 8 +
-        painExtraction.labels.length * 15 +
-        premiumExtraction.labels.length * 12 +
-        (review.rating <= 3 ? 12 : 0),
+        painExtraction.labels.length * 10 +
+        marketExtraction.labels.length * 12 +
+        (evidence.evidence_kind === "review_signal" ? 4 : 0) +
+        ((evidence.review_count ?? 0) >= 2000 ? 6 : 0),
     ),
   );
 
   return {
-    ...review,
-    sentiment_label: sentiment,
+    ...evidence,
+    sentiment_label: determineSentiment(evidence, corpus),
     theme_tags: themeExtraction.labels,
     pain_point_tags: painExtraction.labels,
-    premium_signal_tags: premiumExtraction.labels,
+    market_signal_tags: marketExtraction.labels,
     opportunity_score: opportunityScore,
-    matched_keywords: [...themeExtraction.matchedKeywords, ...painExtraction.matchedKeywords, ...premiumExtraction.matchedKeywords],
+    matched_keywords: [...themeExtraction.matchedKeywords, ...painExtraction.matchedKeywords, ...marketExtraction.matchedKeywords],
   };
 }
 
-function buildRatingDistribution(reviews: EnrichedReview[]): RatingBucket[] {
+function buildRatingDistribution(items: EnrichedEvidence[]): RatingBucket[] {
+  const ratedItems = items.filter((item) => item.rating !== null);
+
   return [5, 4, 3, 2, 1].map((stars) => ({
     stars,
-    count: reviews.filter((review) => review.rating === stars).length,
+    count: ratedItems.filter((item) => item.rating === stars).length,
   }));
 }
 
-function buildChannelComparisons(reviews: EnrichedReview[]): ChannelComparison[] {
-  return ["Amazon", "Sephora"]
+function buildChannelComparisons(items: EnrichedEvidence[]): ChannelComparison[] {
+  return (["Amazon", "Sephora"] as const)
     .map((source) => {
-      const channelReviews = reviews.filter((review) => review.source === source);
+      const channelItems = items.filter((item) => item.source === source);
 
-      if (channelReviews.length === 0) {
+      if (channelItems.length === 0) {
         return null;
       }
 
-      const topTheme = rankLabels(
-        channelReviews.flatMap((review) => review.theme_tags),
-        channelReviews
-          .filter((review) => new Date(review.review_date) >= new Date("2025-11-01"))
-          .flatMap((review) => review.theme_tags),
-      )[0]?.label;
-
-      const topPain = rankLabels(
-        channelReviews.flatMap((review) => review.pain_point_tags),
-        channelReviews.flatMap((review) => review.pain_point_tags),
-      )[0]?.label;
-
-      const premiumShare =
-        channelReviews.filter((review) => review.premium_signal_tags.length > 0).length / channelReviews.length;
+      const recentItems = channelItems.filter(
+        (item) => new Date(item.captured_at).getTime() >= new Date("2026-01-01").getTime(),
+      );
+      const ratedItems = channelItems.filter((item) => item.rating !== null);
+      const themeSignals = rankLabels(
+        channelItems.flatMap((item) => item.theme_tags),
+        recentItems.flatMap((item) => item.theme_tags),
+      );
+      const painSignals = rankLabels(
+        channelItems.flatMap((item) => item.pain_point_tags),
+        recentItems.flatMap((item) => item.pain_point_tags),
+      );
+      const marketSignals = rankLabels(
+        channelItems.flatMap((item) => item.market_signal_tags),
+        recentItems.flatMap((item) => item.market_signal_tags),
+      );
 
       return {
-        source: source as ChannelComparison["source"],
-        reviewCount: channelReviews.length,
-        averageRating: average(channelReviews.map((review) => review.rating)),
-        topTheme: topTheme ?? "보습",
-        topPainPoint: topPain ?? "가성비 부담",
-        premiumShare,
+        source,
+        evidenceCount: channelItems.length,
+        directReviewCount: channelItems.filter((item) => item.evidence_kind === "review_quote").length,
+        signalCount: channelItems.filter((item) => item.evidence_kind === "review_signal").length,
+        averageRating: ratedItems.length > 0 ? average(ratedItems.map((item) => item.rating ?? 0)) : null,
+        topTheme: themeSignals[0]?.label ?? "보습",
+        topPainPoint: painSignals[0]?.label ?? "데이터 없음",
+        topMarketSignal: marketSignals[0]?.label ?? "만족도 우세",
         insight:
           source === "Amazon"
-            ? "실용성과 흡수감 평가가 더 많이 언급돼, 리뉴얼 제안형 영업 메시지에 적합합니다."
-            : "감각 경험과 프리미엄 표현이 강해, 고급화 포지셔닝 제안에 유리합니다.",
+            ? "직접 리뷰에서는 사용감과 자극 우려가 함께 보이므로 제형 개선 포인트를 제안 언어로 바꾸기 좋습니다."
+            : "Sephora 공개 시그널은 만족도와 건성 대응이 강해서 프리미엄 보습 카테고리 제안 논리로 쓰기 좋습니다.",
       };
     })
     .filter((item): item is ChannelComparison => item !== null);
 }
 
-function buildOpportunityCards(reviews: EnrichedReview[]): OpportunityCard[] {
+function buildOpportunityCards(items: EnrichedEvidence[]): OpportunityCard[] {
   return opportunityTemplates
     .map((template) => {
-      const evidenceReviews = reviews.filter(template.match);
+      const evidenceItems = items.filter(template.match);
 
-      if (evidenceReviews.length === 0) {
+      if (evidenceItems.length < 2) {
         return null;
       }
 
-      const evidenceCount = evidenceReviews.length;
-      const sourceMix = [...new Set(evidenceReviews.map((review) => review.source))];
-      const negativeWeight = average(evidenceReviews.map((review) => review.pain_point_tags.length));
-      const premiumWeight = average(evidenceReviews.map((review) => review.premium_signal_tags.length));
-      const opportunityScore = Math.min(
-        99,
-        Math.round(34 + evidenceCount * 12 + sourceMix.length * 8 + negativeWeight * 9 + premiumWeight * 10),
-      );
-      const representativeReview =
-        [...evidenceReviews].sort(
-          (left, right) =>
-            right.premium_signal_tags.length +
-              right.pain_point_tags.length +
-              right.theme_tags.length -
-            (left.premium_signal_tags.length + left.pain_point_tags.length + left.theme_tags.length),
-        )[0] ?? evidenceReviews[0];
-
+      const representative =
+        [...evidenceItems].sort((left, right) => right.opportunity_score - left.opportunity_score)[0] ?? evidenceItems[0];
       const dominantTags = rankLabels(
-        evidenceReviews.flatMap((review) => [...review.theme_tags, ...review.pain_point_tags, ...review.premium_signal_tags]),
-        evidenceReviews.flatMap((review) => [...review.theme_tags, ...review.pain_point_tags, ...review.premium_signal_tags]),
+        evidenceItems.flatMap((item) => [...item.theme_tags, ...item.pain_point_tags, ...item.market_signal_tags]),
+        evidenceItems.flatMap((item) => [...item.theme_tags, ...item.pain_point_tags, ...item.market_signal_tags]),
       )
         .slice(0, 3)
         .map((item) => item.label);
+      const sourceMix = [...new Set(evidenceItems.map((item) => item.source))];
+      const opportunityScore = Math.min(
+        99,
+        Math.round(
+          40 +
+            evidenceItems.length * 8 +
+            sourceMix.length * 6 +
+            average(evidenceItems.map((item) => item.market_signal_tags.length)) * 8,
+        ),
+      );
 
       return {
         id: template.id,
@@ -371,11 +311,11 @@ function buildOpportunityCards(reviews: EnrichedReview[]): OpportunityCard[] {
         proposalConcept: template.proposalConcept,
         salesTalkingPoint: template.salesTalkingPoint,
         roleTie: template.roleTie,
-        evidenceCount,
+        evidenceCount: evidenceItems.length,
         opportunityScore,
-        representativeQuote: quoteExcerpt(representativeReview.review_text),
+        representativeQuote: representative.quote_excerpt ?? representative.review_summary,
         dominantTags,
-        evidenceReviews,
+        evidenceItems,
         sourceMix,
       };
     })
@@ -383,86 +323,88 @@ function buildOpportunityCards(reviews: EnrichedReview[]): OpportunityCard[] {
     .sort((left, right) => right.opportunityScore - left.opportunityScore);
 }
 
-export function analyzePortfolioData(reviews: ReviewRecord[]): PortfolioAnalysis {
-  const enrichedReviews = reviews.map(enrichReview);
-  const recentReviews = enrichedReviews.filter((review) => new Date(review.review_date) >= new Date("2025-11-01"));
+export function analyzePortfolioData(evidenceItems: ConsumerEvidence[]): PortfolioAnalysis {
+  const enrichedEvidence = evidenceItems.map(enrichEvidence);
+  const recentEvidence = enrichedEvidence.filter(
+    (item) => new Date(item.captured_at).getTime() >= new Date("2026-01-01").getTime(),
+  );
+  const ratedEvidence = enrichedEvidence.filter((item) => item.rating !== null);
+  const opportunityCards = buildOpportunityCards(enrichedEvidence);
   const themeSignals = rankLabels(
-    enrichedReviews.flatMap((review) => review.theme_tags),
-    recentReviews.flatMap((review) => review.theme_tags),
+    enrichedEvidence.flatMap((item) => item.theme_tags),
+    recentEvidence.flatMap((item) => item.theme_tags),
   );
   const painSignals = rankLabels(
-    enrichedReviews.flatMap((review) => review.pain_point_tags),
-    recentReviews.flatMap((review) => review.pain_point_tags),
+    enrichedEvidence.flatMap((item) => item.pain_point_tags),
+    recentEvidence.flatMap((item) => item.pain_point_tags),
   );
-  const premiumSignals = rankLabels(
-    enrichedReviews.flatMap((review) => review.premium_signal_tags),
-    recentReviews.flatMap((review) => review.premium_signal_tags),
+  const marketSignals = rankLabels(
+    enrichedEvidence.flatMap((item) => item.market_signal_tags),
+    recentEvidence.flatMap((item) => item.market_signal_tags),
   );
-  const opportunityCards = buildOpportunityCards(enrichedReviews);
 
   return {
-    enrichedReviews,
+    enrichedEvidence,
     metrics: {
-      totalReviews: enrichedReviews.length,
-      averageRating: average(enrichedReviews.map((review) => review.rating)),
-      premiumShare:
-        enrichedReviews.length === 0
-          ? 0
-          : enrichedReviews.filter((review) => review.premium_signal_tags.length > 0).length / enrichedReviews.length,
-      repeatedIssueShare:
-        enrichedReviews.length === 0
-          ? 0
-          : enrichedReviews.filter((review) => review.pain_point_tags.length > 0).length / enrichedReviews.length,
+      totalEvidence: enrichedEvidence.length,
+      directReviewCount: enrichedEvidence.filter((item) => item.evidence_kind === "review_quote").length,
+      signalCount: enrichedEvidence.filter((item) => item.evidence_kind === "review_signal").length,
+      averageRating: ratedEvidence.length > 0 ? average(ratedEvidence.map((item) => item.rating ?? 0)) : 0,
       opportunityCount: opportunityCards.length,
     },
     themeSignals,
     painSignals,
-    premiumSignals,
-    ratingDistribution: buildRatingDistribution(enrichedReviews),
-    channelComparisons: buildChannelComparisons(enrichedReviews),
+    marketSignals,
+    ratingDistribution: buildRatingDistribution(enrichedEvidence),
+    channelComparisons: buildChannelComparisons(enrichedEvidence),
     opportunityCards,
-    keywordOptions: [...new Set([...themeSignals, ...painSignals, ...premiumSignals].map((signal) => signal.label))],
+    keywordOptions: [...new Set([...themeSignals, ...painSignals, ...marketSignals].map((signal) => signal.label))],
   };
 }
 
-export function filterReviews(reviews: ReviewRecord[], filters: FilterState) {
-  return reviews.filter((review) => {
-    const enriched = enrichReview(review);
-    const searchText = normalizeText(`${review.brand} ${review.product_name} ${review.review_title} ${review.review_text}`);
-    const keywordCorpus = normalizeText(
-      `${review.review_title} ${review.review_text} ${review.skin_concern} ${review.category} ${review.price_band}`,
-    );
-    const labelCorpus = [...enriched.theme_tags, ...enriched.pain_point_tags, ...enriched.premium_signal_tags].join(" ");
+export function filterEvidence(evidenceItems: ConsumerEvidence[], filters: FilterState) {
+  return evidenceItems.filter((item) => {
+    const enriched = enrichEvidence(item);
+    const searchText = buildCorpus(item);
+    const labelCorpus = [...enriched.theme_tags, ...enriched.pain_point_tags, ...enriched.market_signal_tags].join(" ");
 
-    if (filters.source !== "all" && review.source !== filters.source) {
+    if (filters.source !== "all" && item.source !== filters.source) {
       return false;
     }
 
-    if (filters.brand !== "all" && review.brand !== filters.brand) {
+    if (filters.evidenceKind !== "all" && item.evidence_kind !== filters.evidenceKind) {
       return false;
     }
 
-    if (filters.category !== "all" && review.category !== filters.category) {
+    if (filters.brand !== "all" && item.brand !== filters.brand) {
       return false;
     }
 
-    if (filters.ratingBand === "high" && review.rating < 4) {
+    if (filters.category !== "all" && item.category !== filters.category) {
       return false;
     }
 
-    if (filters.ratingBand === "mixed" && review.rating !== 3) {
+    if (filters.ratingBand === "high" && (item.rating === null || item.rating < 4)) {
       return false;
     }
 
-    if (filters.ratingBand === "low" && review.rating > 2) {
+    if (filters.ratingBand === "mixed" && item.rating !== 3) {
       return false;
     }
 
-    if (filters.keyword && !keywordCorpus.includes(filters.keyword.toLowerCase()) && !labelCorpus.includes(filters.keyword)) {
+    if (filters.ratingBand === "low" && (item.rating === null || item.rating > 2)) {
       return false;
     }
 
-    if (filters.search && !searchText.includes(filters.search.toLowerCase())) {
+    if (filters.ratingBand === "signal" && item.evidence_kind !== "review_signal") {
+      return false;
+    }
+
+    if (filters.keyword && !searchText.includes(normalizeText(filters.keyword)) && !labelCorpus.includes(filters.keyword)) {
+      return false;
+    }
+
+    if (filters.search && !searchText.includes(normalizeText(filters.search))) {
       return false;
     }
 
@@ -470,9 +412,9 @@ export function filterReviews(reviews: ReviewRecord[], filters: FilterState) {
   });
 }
 
-export function getFilterOptions(reviews: ReviewRecord[]) {
+export function getFilterOptions(evidenceItems: ConsumerEvidence[]) {
   return {
-    brands: [...new Set(reviews.map((review) => review.brand))].sort(),
-    categories: [...new Set(reviews.map((review) => review.category))].sort(),
+    brands: [...new Set(evidenceItems.map((item) => item.brand))].sort(),
+    categories: [...new Set(evidenceItems.map((item) => item.category))].sort(),
   };
 }
