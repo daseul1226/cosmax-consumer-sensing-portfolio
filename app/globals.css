@@ -33,6 +33,18 @@ select {
   font: inherit;
 }
 
+button,
+label,
+span,
+strong,
+a,
+dt,
+dd,
+blockquote {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
 button {
   cursor: pointer;
 }
@@ -44,10 +56,16 @@ h3 {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 600;
   letter-spacing: -0.03em;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  text-wrap: balance;
 }
 
 p {
   margin: 0;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  text-wrap: pretty;
 }
 
 .page-shell {
