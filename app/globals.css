@@ -845,3 +845,168 @@ input:focus {
     max-width: 100%;
   }
 }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  :root {
+    --surface: #ffffff;
+    --line: rgba(0, 0, 0, 0.12);
+    --ink: #111111;
+    --muted: #4f4f4f;
+    --shadow: none;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .page-backdrop,
+  .ghost-button,
+  .filter-toolbar,
+  .keyword-row {
+    display: none !important;
+  }
+
+  .page-shell {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero-card,
+  .section-card,
+  .stat-card,
+  .panel,
+  .channel-card,
+  .detail-card,
+  .evidence-summary,
+  .evidence-item,
+  .opportunity-card,
+  .proposal-summary-card,
+  .criteria-item,
+  .workflow-step,
+  .mini-panel {
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .hero-card::after,
+  .section-card::after {
+    display: none;
+  }
+
+  .hero-card,
+  .section-card,
+  .stats-grid,
+  .workflow-strip,
+  .dashboard-grid,
+  .channel-grid,
+  .opportunity-grid,
+  .evidence-layout,
+  .proposal-summary-grid,
+  .criteria-grid,
+  .opportunity-criteria,
+  .section-heading,
+  .panel,
+  .stat-card,
+  .channel-card,
+  .detail-card,
+  .evidence-summary,
+  .evidence-item,
+  .opportunity-card,
+  .proposal-summary-card,
+  .criteria-item,
+  .workflow-step,
+  .mini-panel,
+  .tag-section,
+  .detail-meta-grid {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .section-card,
+  .hero-card {
+    margin-top: 0;
+    margin-bottom: 10mm;
+    overflow: visible;
+  }
+
+  .section-card + .section-card {
+    margin-top: 0;
+  }
+
+  .section-heading {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  .stats-grid,
+  .workflow-strip,
+  .dashboard-grid,
+  .channel-grid,
+  .opportunity-grid,
+  .evidence-layout,
+  .proposal-summary-grid,
+  .criteria-grid,
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .brand-logo {
+    width: 180px;
+  }
+
+  h1 {
+    font-size: 34pt;
+    line-height: 1.08;
+  }
+
+  h2 {
+    font-size: 20pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  .hero-description,
+  .section-heading p,
+  .panel-header p,
+  .annotation,
+  .mini-panel p,
+  .stat-card p,
+  .channel-card p,
+  .opportunity-card p,
+  .detail-panel p,
+  .evidence-summary p,
+  .evidence-item p,
+  .evidence-footnote,
+  .criteria-note,
+  .criteria-item p,
+  .proposal-summary-card p {
+    color: #4f4f4f !important;
+  }
+
+  .source-link {
+    color: #111111;
+    text-decoration: underline;
+  }
+
+  .opportunity-card,
+  .proposal-summary-card,
+  .detail-card,
+  .channel-card,
+  .panel,
+  .stat-card {
+    border-radius: 14px;
+  }
+}
