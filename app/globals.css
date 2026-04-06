@@ -881,6 +881,15 @@ input:focus {
     padding: 0;
   }
 
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
   .hero-card,
   .section-card,
   .stat-card,
@@ -939,6 +948,63 @@ input:focus {
     page-break-inside: auto;
   }
 
+  .hero-grid,
+  .stats-grid,
+  .workflow-strip,
+  .dashboard-grid,
+  .channel-grid,
+  .opportunity-grid,
+  .evidence-layout,
+  .evidence-list,
+  .evidence-detail,
+  .proposal-summary-grid,
+  .criteria-grid,
+  .detail-meta-grid,
+  .filter-toolbar,
+  .keyword-row {
+    display: block !important;
+  }
+
+  .hero-card,
+  .section-card,
+  .stat-card,
+  .panel,
+  .channel-card,
+  .detail-card,
+  .evidence-summary,
+  .evidence-item,
+  .opportunity-card,
+  .proposal-summary-card,
+  .criteria-item,
+  .workflow-step,
+  .mini-panel,
+  .opportunity-criteria {
+    width: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 0 6mm 0 !important;
+  }
+
+  .section-card,
+  .hero-card {
+    padding: 6mm !important;
+  }
+
+  .evidence-item,
+  .opportunity-card,
+  .proposal-summary-card,
+  .stat-card,
+  .panel,
+  .channel-card,
+  .criteria-item,
+  .workflow-step,
+  .mini-panel {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
   .section-card,
   .hero-card {
     margin-top: 0;
@@ -966,7 +1032,7 @@ input:focus {
   .proposal-summary-grid,
   .criteria-grid,
   .hero-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: none !important;
   }
 
   .evidence-layout,
@@ -978,6 +1044,26 @@ input:focus {
   .detail-card,
   .proposal-summary-card {
     min-height: auto !important;
+  }
+
+  .opportunity-top,
+  .evidence-head,
+  .detail-header,
+  .channel-top,
+  .proposal-summary-top,
+  .eyebrow-row,
+  .section-heading {
+    display: block !important;
+  }
+
+  .opportunity-top span:last-child,
+  .channel-top strong,
+  .detail-score,
+  .proposal-summary-top .proposal-score-chip,
+  .eyebrow-subtle,
+  .section-heading p {
+    display: block;
+    margin-top: 2mm;
   }
 
   .brand-logo {
