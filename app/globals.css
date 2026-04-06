@@ -905,19 +905,10 @@ input:focus {
   }
 
   .section-heading,
-  .panel,
   .stat-card,
-  .channel-card,
-  .detail-card,
-  .evidence-summary,
-  .evidence-item,
-  .opportunity-card,
-  .proposal-summary-card,
   .criteria-item,
   .workflow-step,
-  .mini-panel,
-  .tag-section,
-  .detail-meta-grid {
+  .mini-panel {
     break-inside: avoid-page;
     page-break-inside: avoid;
   }
@@ -930,9 +921,20 @@ input:focus {
   .channel-grid,
   .opportunity-grid,
   .evidence-layout,
+  .evidence-list,
+  .evidence-detail,
   .proposal-summary-grid,
   .criteria-grid,
-  .opportunity-criteria {
+  .opportunity-criteria,
+  .panel,
+  .channel-card,
+  .detail-card,
+  .evidence-summary,
+  .evidence-item,
+  .opportunity-card,
+  .proposal-summary-card,
+  .tag-section,
+  .detail-meta-grid {
     break-inside: auto;
     page-break-inside: auto;
   }
@@ -959,10 +961,23 @@ input:focus {
   .channel-grid,
   .opportunity-grid,
   .evidence-layout,
+  .evidence-list,
+  .evidence-detail,
   .proposal-summary-grid,
   .criteria-grid,
   .hero-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .evidence-layout,
+  .evidence-list,
+  .evidence-detail {
+    display: block !important;
+  }
+
+  .detail-card,
+  .proposal-summary-card {
+    min-height: auto !important;
   }
 
   .brand-logo {
