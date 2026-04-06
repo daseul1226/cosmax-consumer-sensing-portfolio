@@ -42,21 +42,7 @@ function getEvidenceKindLabel(kind: string) {
   return kind === "review_quote" ? "공개 리뷰 인용" : "리뷰 시그널";
 }
 
-function getOpportunityLevel(score: number) {
-  if (score >= 85) {
-    return { label: "상", tone: "high" as const };
-  }
-
-  if (score >= 70) {
-    return { label: "중", tone: "medium" as const };
-  }
-
-  return { label: "하", tone: "low" as const };
-}
-
 function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: EnrichedEvidence }) {
-  const evidenceLevel = getOpportunityLevel(evidence.opportunity_score);
-
   return (
     <article className="detail-card">
       <div className="detail-header">
@@ -68,8 +54,8 @@ function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: E
           <h3>{evidence.product_name}</h3>
         </div>
         <div className="detail-score">
-          <strong>{evidenceLevel.label}</strong>
-          <span>리뷰 등급</span>
+          <strong>{evidence.opportunity_score}</strong>
+          <span>리뷰 점수</span>
         </div>
       </div>
 
@@ -491,7 +477,6 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         <div className="opportunity-grid">
           {analysis.opportunityCards.map((card) => {
             const active = activeOpportunity?.id === card.id;
-            const opportunityLevel = getOpportunityLevel(card.opportunityScore);
 
             return (
               <button
@@ -501,9 +486,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
                 type="button"
               >
                 <div className="opportunity-top">
-                  <span>
-                    기회 등급 <em className={`level-badge ${opportunityLevel.tone}`}>{opportunityLevel.label}</em>
-                  </span>
+                  <span>기회 점수 {card.opportunityScore}</span>
                   <span>{card.evidenceCount}건 리뷰</span>
                 </div>
                 <h3>{card.title}</h3>
@@ -526,23 +509,23 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
           })}
         </div>
         <div className="opportunity-criteria">
-          <strong>기회 등급 산출 기준</strong>
+          <strong>기회 점수 산출 기준</strong>
           <div className="criteria-grid">
             <div className="criteria-item">
-              <span className="level-badge high">상</span>
-              <p>여러 리뷰에서 반복되고 Amazon과 Sephora처럼 복수 채널에서 함께 확인되며 시장 시그널이 강한 경우</p>
+              <span className="criteria-number">01</span>
+              <p>여러 리뷰에서 반복될수록 점수가 올라갑니다.</p>
             </div>
             <div className="criteria-item">
-              <span className="level-badge medium">중</span>
-              <p>반복 리뷰가 충분하거나 특정 채널 안에서 제안 포인트가 비교적 뚜렷하게 드러나는 경우</p>
+              <span className="criteria-number">02</span>
+              <p>Amazon과 Sephora처럼 복수 채널에서 함께 보이면 점수가 더 높아집니다.</p>
             </div>
             <div className="criteria-item">
-              <span className="level-badge low">하</span>
-              <p>초기 검토는 필요하지만 반복 리뷰 수나 채널 교차 신호가 아직 제한적인 경우</p>
+              <span className="criteria-number">03</span>
+              <p>시장 시그널 태그가 많이 붙을수록 제안 가치가 높다고 보고 가중치를 더합니다.</p>
             </div>
           </div>
           <p className="criteria-note">
-            현재 등급은 규칙 기반 데모 로직으로 계산되며, 반복 리뷰 수, 채널 교차 여부, 시장 시그널 태그 강도를 함께 반영합니다.
+            현재 점수는 규칙 기반 데모 로직으로 계산되며, 반복 리뷰 수, 채널 교차 여부, 시장 시그널 태그 강도를 함께 반영합니다.
           </p>
         </div>
       </section>
@@ -624,13 +607,11 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
 
         <div className="proposal-summary-grid">
           {finalProposalCards.map((card, index) => {
-            const proposalLevel = getOpportunityLevel(card.opportunityScore);
-
             return (
               <article className="proposal-summary-card" key={`summary-${card.id}`}>
                 <div className="proposal-summary-top">
                   <span className="proposal-summary-index">{`OPPORTUNITY ${String(index + 1).padStart(2, "0")}`}</span>
-                  <span className={`level-badge ${proposalLevel.tone}`}>{proposalLevel.label}</span>
+                  <span className="proposal-score-chip">{card.opportunityScore}점</span>
                 </div>
                 <h3>{card.title}</h3>
                 <p>{card.summary}</p>
