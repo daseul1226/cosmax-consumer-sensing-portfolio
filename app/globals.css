@@ -904,17 +904,6 @@ input:focus {
     display: none;
   }
 
-  .hero-card,
-  .section-card,
-  .stats-grid,
-  .workflow-strip,
-  .dashboard-grid,
-  .channel-grid,
-  .opportunity-grid,
-  .evidence-layout,
-  .proposal-summary-grid,
-  .criteria-grid,
-  .opportunity-criteria,
   .section-heading,
   .panel,
   .stat-card,
@@ -931,6 +920,21 @@ input:focus {
   .detail-meta-grid {
     break-inside: avoid-page;
     page-break-inside: avoid;
+  }
+
+  .hero-card,
+  .section-card,
+  .stats-grid,
+  .workflow-strip,
+  .dashboard-grid,
+  .channel-grid,
+  .opportunity-grid,
+  .evidence-layout,
+  .proposal-summary-grid,
+  .criteria-grid,
+  .opportunity-criteria {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .section-card,
