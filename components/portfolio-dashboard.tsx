@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { analyzePortfolioData, filterEvidence, getFilterOptions } from "@/lib/analysis";
 import { ConsumerEvidence, EnrichedEvidence, FilterState, OpportunityCard } from "@/lib/types";
@@ -188,14 +187,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         <div className="hero-grid">
           <div>
             <div className="brand-lockup">
-              <Image
-                alt="COSMAX logo"
-                className="brand-logo"
-                height={72}
-                priority
-                src="/branding/cosmax-logo-main.webp"
-                width={274}
-              />
+              <img alt="COSMAX logo" className="brand-logo" height={72} src="branding/cosmax-logo-main.webp" width={274} />
               <p>Premium trust, consumer-first sensing, proposal-ready translation</p>
             </div>
             <p className="hero-kicker">실제 공개 소비자 근거를 고객사 제안 언어로 바꾸는 코스맥스 마케팅 포트폴리오</p>
