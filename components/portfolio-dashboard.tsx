@@ -190,12 +190,10 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
               <img alt="COSMAX logo" className="brand-logo" height={72} src="branding/cosmax-logo-main.webp" width={274} />
               <p>Premium trust, consumer-first sensing, proposal-ready translation</p>
             </div>
-            <p className="hero-kicker">실제 공개 소비자 근거를 고객사 제안 언어로 바꾸는 코스맥스 마케팅 포트폴리오</p>
-            <h1>미국 소비자 리뷰와 Sephora 공개 시그널을 분석해 고객사 제안 가능한 K-뷰티 기회를 도출합니다.</h1>
+            <h1>COSMAX Consumer Sensing Proposal</h1>
             <p className="hero-description">
               이 화면은 라이브 크롤러가 아니라 <strong>실제 공개 리뷰 인용과 상품 페이지 시그널을 수동 큐레이션한 데이터셋</strong>
-              을 기반으로 작동합니다. 코스맥스 신년사의 <strong>CONSUMER</strong> 전략처럼 소비자 목소리를 제품 기획, 영업 제안,
-              기존 고객 육성 메시지로 번역하는 흐름을 보여주도록 설계했습니다.
+              을 기반으로 작동합니다.
             </p>
           </div>
 
@@ -207,10 +205,6 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <div className="mini-panel">
               <span className="mini-label">직무 연결</span>
               <p>트렌드 읽기에서 끝나지 않고 고객사 제안 포인트, SKU 확장 논리, 육성 메시지까지 이어지도록 해석했습니다.</p>
-            </div>
-            <div className="mini-panel">
-              <span className="mini-label">포트폴리오 톤</span>
-              <p>화려한 BI 대시보드보다 실무 보고서와 세일즈 제안서의 중간 지점을 목표로 구성했습니다.</p>
             </div>
           </div>
         </div>
