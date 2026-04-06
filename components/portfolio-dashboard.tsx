@@ -140,6 +140,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
   const analysis = analyzePortfolioData(filteredEvidence);
   const activeOpportunity =
     analysis.opportunityCards.find((card) => card.id === activeOpportunityId) ?? analysis.opportunityCards[0] ?? null;
+  const finalProposalCards = analysis.opportunityCards.slice(0, 3);
   const selectedEvidence =
     (activeOpportunity?.evidenceItems ?? analysis.enrichedEvidence).find((item) => item.id === selectedEvidenceId) ??
     (activeOpportunity?.evidenceItems ?? analysis.enrichedEvidence)[0] ??
@@ -577,6 +578,30 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <p>근거 타입이나 브랜드 필터를 조금 완화하면 다시 제안 시나리오가 보입니다.</p>
           </div>
         )}
+      </section>
+
+      <section className="section-card">
+        <div className="section-heading">
+          <div>
+            <span className="section-index">Section 5</span>
+            <h2>Opportunity & Proposal</h2>
+          </div>
+          <p>분석 결과 중 실제 고객사 제안 문장으로 연결하기 좋은 핵심 기회만 마지막에 다시 요약했습니다.</p>
+        </div>
+
+        <div className="proposal-summary-grid">
+          {finalProposalCards.map((card, index) => (
+            <article className="proposal-summary-card" key={`summary-${card.id}`}>
+              <span className="proposal-summary-index">{`OPPORTUNITY ${String(index + 1).padStart(2, "0")}`}</span>
+              <h3>{card.title}</h3>
+              <p>{card.summary}</p>
+              <div className="proposal-summary-note">
+                <strong>제안</strong>
+                <span>{card.proposalConcept}</span>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
     </main>
   );
