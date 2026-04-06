@@ -42,7 +42,21 @@ function getEvidenceKindLabel(kind: string) {
   return kind === "review_quote" ? "공개 리뷰 인용" : "리뷰 시그널";
 }
 
+function getOpportunityLevel(score: number) {
+  if (score >= 85) {
+    return { label: "상", tone: "high" as const };
+  }
+
+  if (score >= 70) {
+    return { label: "중", tone: "medium" as const };
+  }
+
+  return { label: "하", tone: "low" as const };
+}
+
 function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: EnrichedEvidence }) {
+  const evidenceLevel = getOpportunityLevel(evidence.opportunity_score);
+
   return (
     <article className="detail-card">
       <div className="detail-header">
@@ -54,8 +68,8 @@ function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: E
           <h3>{evidence.product_name}</h3>
         </div>
         <div className="detail-score">
-          <strong>{evidence.opportunity_score}</strong>
-          <span>opportunity score</span>
+          <strong>{evidenceLevel.label}</strong>
+          <span>리뷰 등급</span>
         </div>
       </div>
 
@@ -78,9 +92,7 @@ function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: E
         </div>
       </div>
 
-      <blockquote className="review-quote">
-        {evidence.quote_excerpt ?? evidence.review_summary}
-      </blockquote>
+      <blockquote className="review-quote">{evidence.quote_excerpt ?? evidence.review_summary}</blockquote>
 
       <div className="detail-panel muted">
         <strong>리뷰 설명</strong>
@@ -194,8 +206,8 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <h1>COSMAX Consumer Sensing Proposal</h1>
             <p className="hero-description">
               이 화면은 라이브 크롤러가 아니라 <strong>실제 공개 리뷰 인용과 상품 페이지 시그널을 수동 큐레이션한 데이터셋</strong>
-              을 기반으로 작동합니다. 현재는 <strong>{evidenceItems.length}건</strong>의 공개 리뷰를 기준으로 분석했지만, 입사 후에는 더 많은
-              글로벌 리뷰 데이터를 확보하고 사내 데이터까지 함께 분석해 인사이트의 정확도와 제안의 완성도를 더욱 높이고 싶습니다.
+              을 기반으로 작동합니다. 현재는 <strong>{evidenceItems.length}건</strong>의 공개 리뷰를 기준으로 분석했지만, 입사 후에는 더 많은 글로벌
+              리뷰 데이터를 확보하고 사내 데이터까지 함께 분석해 인사이트의 정확도와 제안의 완성도를 더욱 높이고 싶습니다.
             </p>
           </div>
 
@@ -222,7 +234,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
           </div>
           <div className="workflow-step">
             <span>03</span>
-            <p>반복 니즈와 제형 기회 점수화</p>
+            <p>반복 니즈와 제형 기회 정리</p>
           </div>
           <div className="workflow-step">
             <span>04</span>
@@ -250,7 +262,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         <article className="stat-card">
           <span className="stat-label">제안 기회 카드</span>
           <strong>{analysis.metrics.opportunityCount}개</strong>
-          <p>리뷰가 2건 이상 겹치는 영역만 카드로 노출해 과장된 해석을 줄였습니다.</p>
+          <p>일회성 의견은 제외하고, 여러 리뷰에서 반복된 니즈만 기회로 정리했습니다.</p>
         </article>
       </section>
 
@@ -274,10 +286,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
           </label>
           <label>
             <span>리뷰 타입</span>
-            <select
-              value={filters.evidenceKind}
-              onChange={(event) => setFilters({ ...filters, evidenceKind: event.target.value })}
-            >
+            <select value={filters.evidenceKind} onChange={(event) => setFilters({ ...filters, evidenceKind: event.target.value })}>
               <option value="all">전체</option>
               <option value="review_quote">공개 리뷰 인용</option>
               <option value="review_signal">리뷰 시그널</option>
@@ -482,6 +491,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         <div className="opportunity-grid">
           {analysis.opportunityCards.map((card) => {
             const active = activeOpportunity?.id === card.id;
+            const opportunityLevel = getOpportunityLevel(card.opportunityScore);
 
             return (
               <button
@@ -491,7 +501,9 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
                 type="button"
               >
                 <div className="opportunity-top">
-                  <span>기회 점수 {card.opportunityScore}</span>
+                  <span>
+                    기회 등급 <em className={`level-badge ${opportunityLevel.tone}`}>{opportunityLevel.label}</em>
+                  </span>
                   <span>{card.evidenceCount}건 리뷰</span>
                 </div>
                 <h3>{card.title}</h3>
@@ -512,6 +524,26 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
               </button>
             );
           })}
+        </div>
+        <div className="opportunity-criteria">
+          <strong>기회 등급 산출 기준</strong>
+          <div className="criteria-grid">
+            <div className="criteria-item">
+              <span className="level-badge high">상</span>
+              <p>여러 리뷰에서 반복되고 Amazon과 Sephora처럼 복수 채널에서 함께 확인되며 시장 시그널이 강한 경우</p>
+            </div>
+            <div className="criteria-item">
+              <span className="level-badge medium">중</span>
+              <p>반복 리뷰가 충분하거나 특정 채널 안에서 제안 포인트가 비교적 뚜렷하게 드러나는 경우</p>
+            </div>
+            <div className="criteria-item">
+              <span className="level-badge low">하</span>
+              <p>초기 검토는 필요하지만 반복 리뷰 수나 채널 교차 신호가 아직 제한적인 경우</p>
+            </div>
+          </div>
+          <p className="criteria-note">
+            현재 등급은 규칙 기반 데모 로직으로 계산되며, 반복 리뷰 수, 채널 교차 여부, 시장 시그널 태그 강도를 함께 반영합니다.
+          </p>
         </div>
       </section>
 
@@ -591,17 +623,24 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         </div>
 
         <div className="proposal-summary-grid">
-          {finalProposalCards.map((card, index) => (
-            <article className="proposal-summary-card" key={`summary-${card.id}`}>
-              <span className="proposal-summary-index">{`OPPORTUNITY ${String(index + 1).padStart(2, "0")}`}</span>
-              <h3>{card.title}</h3>
-              <p>{card.summary}</p>
-              <div className="proposal-summary-note">
-                <strong>제안</strong>
-                <span>{card.proposalConcept}</span>
-              </div>
-            </article>
-          ))}
+          {finalProposalCards.map((card, index) => {
+            const proposalLevel = getOpportunityLevel(card.opportunityScore);
+
+            return (
+              <article className="proposal-summary-card" key={`summary-${card.id}`}>
+                <div className="proposal-summary-top">
+                  <span className="proposal-summary-index">{`OPPORTUNITY ${String(index + 1).padStart(2, "0")}`}</span>
+                  <span className={`level-badge ${proposalLevel.tone}`}>{proposalLevel.label}</span>
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.summary}</p>
+                <div className="proposal-summary-note">
+                  <strong>제안</strong>
+                  <span>{card.proposalConcept}</span>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>

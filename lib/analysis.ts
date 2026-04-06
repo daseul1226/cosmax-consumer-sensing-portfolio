@@ -203,11 +203,11 @@ function enrichEvidence(evidence: ConsumerEvidence): EnrichedEvidence {
   const opportunityScore = Math.min(
     99,
     Math.round(
-      36 +
-        themeExtraction.labels.length * 8 +
-        painExtraction.labels.length * 10 +
-        marketExtraction.labels.length * 12 +
-        (evidence.evidence_kind === "review_signal" ? 4 : 0) +
+      28 +
+        themeExtraction.labels.length * 5 +
+        painExtraction.labels.length * 7 +
+        marketExtraction.labels.length * 9 +
+        (evidence.evidence_kind === "review_signal" ? 3 : 0) +
         ((evidence.review_count ?? 0) >= 2000 ? 6 : 0),
     ),
   );
@@ -297,10 +297,10 @@ function buildOpportunityCards(items: EnrichedEvidence[]): OpportunityCard[] {
       const opportunityScore = Math.min(
         99,
         Math.round(
-          40 +
-            evidenceItems.length * 8 +
-            sourceMix.length * 6 +
-            average(evidenceItems.map((item) => item.market_signal_tags.length)) * 8,
+          28 +
+            evidenceItems.length * 2 +
+            sourceMix.length * 8 +
+            average(evidenceItems.map((item) => item.market_signal_tags.length)) * 9,
         ),
       );
 
