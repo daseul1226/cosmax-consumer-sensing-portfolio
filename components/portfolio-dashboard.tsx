@@ -83,7 +83,7 @@ function EvidenceDetail({ card, evidence }: { card: OpportunityCard; evidence: E
       </blockquote>
 
       <div className="detail-panel muted">
-        <strong>근거 설명</strong>
+        <strong>리뷰 설명</strong>
         <p>{evidence.review_summary}</p>
       </div>
 
@@ -194,14 +194,15 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <h1>COSMAX Consumer Sensing Proposal</h1>
             <p className="hero-description">
               이 화면은 라이브 크롤러가 아니라 <strong>실제 공개 리뷰 인용과 상품 페이지 시그널을 수동 큐레이션한 데이터셋</strong>
-              을 기반으로 작동합니다.
+              을 기반으로 작동합니다. 현재는 <strong>{evidenceItems.length}건</strong>의 공개 리뷰를 기준으로 분석했지만, 입사 후에는 더 많은
+              글로벌 리뷰 데이터를 확보하고 사내 데이터까지 함께 분석해 인사이트의 정확도와 제안의 완성도를 더욱 높이고 싶습니다.
             </p>
           </div>
 
           <div className="hero-aside">
             <div className="mini-panel">
               <span className="mini-label">데이터 구조</span>
-              <p>Amazon은 공개 리뷰 인용, Sephora는 공개 상품 페이지의 review signal을 분리해 실제 근거 구조를 투명하게 보여줍니다.</p>
+              <p>Amazon은 공개 리뷰 인용, Sephora는 공개 상품 페이지의 review signal을 분리해 실제 리뷰 구조를 투명하게 보여줍니다.</p>
             </div>
             <div className="mini-panel">
               <span className="mini-label">직무 연결</span>
@@ -232,14 +233,14 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
 
       <section className="stats-grid">
         <article className="stat-card">
-          <span className="stat-label">전체 근거</span>
+          <span className="stat-label">전체 분석 리뷰 수</span>
           <strong>{analysis.metrics.totalEvidence}건</strong>
-          <p>실제 공개 근거만 남긴 상태에서 필터에 맞춰 다시 계산됩니다.</p>
+          <p>실제 공개 리뷰만 남긴 상태에서 필터에 맞춰 다시 계산됩니다.</p>
         </article>
         <article className="stat-card">
           <span className="stat-label">직접 리뷰 인용</span>
           <strong>{analysis.metrics.directReviewCount}건</strong>
-          <p>Amazon 공개 리뷰 문맥을 요약해 넣은 근거입니다.</p>
+          <p>Amazon 공개 리뷰 문맥을 요약해 넣은 리뷰입니다.</p>
         </article>
         <article className="stat-card">
           <span className="stat-label">공개 시그널</span>
@@ -249,7 +250,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         <article className="stat-card">
           <span className="stat-label">제안 기회 카드</span>
           <strong>{analysis.metrics.opportunityCount}개</strong>
-          <p>근거가 2건 이상 겹치는 영역만 카드로 노출해 과장된 해석을 줄였습니다.</p>
+          <p>리뷰가 2건 이상 겹치는 영역만 카드로 노출해 과장된 해석을 줄였습니다.</p>
         </article>
       </section>
 
@@ -259,7 +260,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <span className="section-index">Section 2</span>
             <h2>Trend Sensing Dashboard</h2>
           </div>
-          <p>플랫폼, 근거 타입, 브랜드, 카테고리, 평점 구간, 키워드를 조합해 소비자 신호를 제안 가능한 언어로 읽습니다.</p>
+          <p>플랫폼, 리뷰 타입, 브랜드, 카테고리, 평점 구간, 키워드를 조합해 소비자 신호를 제안 가능한 언어로 읽습니다.</p>
         </div>
 
         <div className="filter-toolbar">
@@ -272,7 +273,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             </select>
           </label>
           <label>
-            <span>근거 타입</span>
+            <span>리뷰 타입</span>
             <select
               value={filters.evidenceKind}
               onChange={(event) => setFilters({ ...filters, evidenceKind: event.target.value })}
@@ -315,7 +316,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             </select>
           </label>
           <label className="search-field">
-            <span>근거 검색</span>
+            <span>리뷰 검색</span>
             <input
               value={filters.search}
               onChange={(event) => setFilters({ ...filters, search: event.target.value })}
@@ -349,7 +350,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
 
         {analysis.metrics.totalEvidence === 0 ? (
           <div className="empty-state">
-            <h3>조건에 맞는 공개 근거가 없습니다.</h3>
+            <h3>조건에 맞는 공개 리뷰가 없습니다.</h3>
             <p>필터를 조금 완화하면 다시 제안 가능한 인사이트를 확인할 수 있습니다.</p>
           </div>
         ) : (
@@ -432,7 +433,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <article className="panel full-width">
               <div className="panel-header">
                 <h3>채널별 차이</h3>
-                <p>Amazon 직접 리뷰와 Sephora 시그널이 어떻게 다른 근거를 주는지 비교합니다.</p>
+                <p>Amazon 직접 리뷰와 Sephora 시그널이 어떻게 다른 리뷰 해석을 주는지 비교합니다.</p>
               </div>
               <div className="channel-grid">
                 {analysis.channelComparisons.map((channel) => (
@@ -443,7 +444,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
                     </div>
                     <dl>
                       <div>
-                        <dt>근거 수</dt>
+                        <dt>분석 리뷰 수</dt>
                         <dd>{channel.evidenceCount}건</dd>
                       </div>
                       <div>
@@ -476,7 +477,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <span className="section-index">Section 3</span>
             <h2>Proposal Opportunity Board</h2>
           </div>
-          <p>소비자 근거를 코스맥스 마케팅 직무의 언어로 재구성해 바로 제안 가능한 카드 형태로 보여줍니다.</p>
+          <p>소비자 리뷰를 코스맥스 마케팅 직무의 언어로 재구성해 바로 제안 가능한 카드 형태로 보여줍니다.</p>
         </div>
         <div className="opportunity-grid">
           {analysis.opportunityCards.map((card) => {
@@ -491,7 +492,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
               >
                 <div className="opportunity-top">
                   <span>기회 점수 {card.opportunityScore}</span>
-                  <span>{card.evidenceCount}건 근거</span>
+                  <span>{card.evidenceCount}건 리뷰</span>
                 </div>
                 <h3>{card.title}</h3>
                 <p>{card.summary}</p>
@@ -520,7 +521,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <span className="section-index">Section 4</span>
             <h2>Evidence Viewer</h2>
           </div>
-          <p>카드별 근거를 클릭하면 실제 출처 URL, 리뷰 인용 여부, 시그널 종류까지 함께 확인할 수 있습니다.</p>
+          <p>카드별 리뷰를 클릭하면 실제 출처 URL, 리뷰 인용 여부, 시그널 종류까지 함께 확인할 수 있습니다.</p>
         </div>
 
         {activeOpportunity ? (
@@ -567,7 +568,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
                 <EvidenceDetail card={activeOpportunity} evidence={selectedEvidence} />
               ) : (
                 <div className="empty-state compact">
-                  <h3>근거 항목을 선택해주세요.</h3>
+                  <h3>리뷰 항목을 선택해주세요.</h3>
                 </div>
               )}
             </div>
@@ -575,7 +576,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
         ) : (
           <div className="empty-state compact">
             <h3>현재 필터 조건에서는 기회 카드가 생성되지 않습니다.</h3>
-            <p>근거 타입이나 브랜드 필터를 조금 완화하면 다시 제안 시나리오가 보입니다.</p>
+            <p>리뷰 타입이나 브랜드 필터를 조금 완화하면 다시 제안 시나리오가 보입니다.</p>
           </div>
         )}
       </section>
@@ -586,7 +587,7 @@ export default function PortfolioDashboard({ evidenceItems }: { evidenceItems: C
             <span className="section-index">Section 5</span>
             <h2>Opportunity & Proposal</h2>
           </div>
-          <p>분석 결과 중 실제 고객사 제안 문장으로 연결하기 좋은 핵심 기회만 마지막에 다시 요약했습니다.</p>
+          <p>분석 결과 중 실제 고객사 제안 문장으로 연결하기 좋은 핵심 리뷰 인사이트만 마지막에 다시 요약했습니다.</p>
         </div>
 
         <div className="proposal-summary-grid">
